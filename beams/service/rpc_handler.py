@@ -264,9 +264,11 @@ class RPCHandler(BEAMS_rpcServicer, Worker):
 
 
 class BeamsService(Worker):
-    def __init__(self):
+    def __init__(self, config: Optional[BeamsConfig] = None):
         # TODO: make a singleton. Make process safe by leaving artifact file
         super().__init__("BeamsService", grace_window_before_terminate_seconds=0.5)
+        if config is None:
+            self.config = BeamsConfig()
 
         class SyncMan(BaseManager):
             def __init__(self, *args, **kwargs):
@@ -295,7 +297,7 @@ class BeamsService(Worker):
                 tree.shutdown()
 
     def work_func(self):
-        self.grpc_service = RPCHandler(sync_manager=self.sync_man)
+        self.grpc_service = RPCHandler(sync_manager=self.sync_man, config=self.config)
         self.grpc_service.start_work()
 
         # the job of this work function will be to consume messages and update
