@@ -1,4 +1,5 @@
 import logging
+import socket
 import time
 from concurrent import futures
 from dataclasses import dataclass, field
@@ -268,7 +269,9 @@ class BeamsService(Worker):
         # TODO: make a singleton. Make process safe by leaving artifact file
         super().__init__("BeamsService", grace_window_before_terminate_seconds=0.5)
         if config is None:
-            self.config = BeamsConfig()
+            config = BeamsConfig()
+        self.config = config
+        logger.info(f"Starting beams service on {socket.gethostname()}:{config.port}")
 
         class SyncMan(BaseManager):
             def __init__(self, *args, **kwargs):
