@@ -64,7 +64,7 @@ def find_config() -> str:
     Returns
     -------
     str
-        The full path the config file, e.g. "~/.config/beams.cfg"
+        The full path the config file, e.g. "/home/username/.config/beams.cfg"
 
     Raises
     ------
