@@ -123,7 +123,7 @@ def load_config(config_file: Optional[str] = None) -> BeamsConfig:
     config_parser = configparser.ConfigParser()
     files_read = config_parser.read(config_file)
     if not files_read:
-        raise ConfigMalformedError(f"Cannot read malformed config file {config_file}")
+        raise ConfigMalformedError(f"Cannot read missing or malformed config file {config_file}")
     try:
         return BeamsConfig(
             host=config_parser["server"]["host"],
