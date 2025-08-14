@@ -174,9 +174,8 @@ def main(*args, **kwargs):
         print("No command provided")
         return
 
-    from beams.config import load_config_or_default
     from beams.service.rpc_client import RPCClient
     cmd = kwargs.pop("command")
     logger.debug(f"Executing {cmd} with args {args, kwargs}")
-    client = RPCClient(config=load_config_or_default())
+    client = RPCClient.from_config(allow_no_config=True)
     print(client.run(cmd, *args, **kwargs))
