@@ -7,7 +7,7 @@ from uuid import UUID
 
 import grpc
 
-from beams.config import BeamsConfig
+from beams.config import BeamsConfig, load_config_or_default
 from beams.service.remote_calls.beams_rpc_pb2_grpc import BEAMS_rpcStub
 from beams.service.remote_calls.behavior_tree_pb2 import (NodeId,
                                                           TickConfiguration,
@@ -42,6 +42,16 @@ class RPCClient:
         # Default ecs config uses psproxy, which doesn't work here
         # TODO move grpc options to the config file
         self.grpc_options = (("grpc.enable_http_proxy", 0),)
+
+    @classmethod
+    def from_config(cls, config_file: Optional[str] = None, allow_no_config: bool = False) -> "RPCClient":
+        """
+        Initialize an RPCClient from the standard config file.
+
+        See :func:`config.load_config_or_default` for information on the arguments here.
+        """
+        config = load_config_or_default(config_file=config_file, allow_no_config=allow_no_config)
+        return cls(config=config)
 
     def run(self, command: str, **kwargs) -> Union[HeartBeatReply, TreeDetails]:
         """

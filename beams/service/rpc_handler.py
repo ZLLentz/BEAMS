@@ -10,7 +10,7 @@ from uuid import UUID, uuid4
 
 import grpc
 
-from beams.config import BeamsConfig
+from beams.config import BeamsConfig, load_config_or_default
 from beams.service.helpers.worker import Worker
 from beams.service.remote_calls.beams_rpc_pb2_grpc import (
     BEAMS_rpcServicer, add_BEAMS_rpcServicer_to_server)
@@ -289,6 +289,16 @@ class BeamsService(Worker):
         self.sync_man = SyncMan()
         self.sync_man.start()
         logger.debug(f"Sync Man starting at: {self.sync_man.address}")
+
+    @classmethod
+    def from_config(cls, config_file: Optional[str] = None, allow_no_config: bool = False) -> "BeamsService":
+        """
+        Initialize an BeamsService from the standard config file.
+
+        See :func:`config.load_config_or_default` for information on the arguments here.
+        """
+        config = load_config_or_default(config_file=config_file, allow_no_config=allow_no_config)
+        return cls(config=config)
 
     # mechanism to send shutdown signal to trees
     def join_all_trees(self):
